@@ -1,0 +1,2 @@
+# mdimg_hosting
+将markdown中引用的图片上传到图床并更新link
