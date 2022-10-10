@@ -13,6 +13,9 @@ Environments
 - `COS_BUCKETNAME`: 腾讯云COS存储桶名称 
 - `COS_SECRETID`: 腾讯云访问凭证secretid
 - `COS_SECRETKEY`: 腾讯云访问密钥secretkey
+- `HTTP_PROXY`,`HTTPS_PROXY`: http/https代理地址 
+- `SOCKS5_PROXY`: socks5代理地址
+- `SOCKS5_USER`,`SOCKS5_PASSWORD`: socks5代理认证用户密码
 
 ```mermaid
 graph TD
