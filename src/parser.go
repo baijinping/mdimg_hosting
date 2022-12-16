@@ -37,6 +37,10 @@ func (ie *ImageElement) AlreadyHosting() bool {
 	return ie.onHosting
 }
 
+func (ie *ImageElement) IsFinishDownload() bool {
+	return len(ie.rawData) > 0
+}
+
 func (ie *ImageElement) HoldFile(rawData []byte) {
 	ie.rawData = rawData
 }
@@ -117,11 +121,6 @@ func ReRenderContent(content []byte, elems []*ImageElement) []byte {
 	for _, elem := range elems {
 		buf.Write(content[startIdx:elem.StartIdx])
 		buf.WriteString(renderImageMark(elem))
-
-		// 决定是否保留源地址
-		if ReserveSourceImageUrl {
-			buf.WriteString(fmt.Sprintf("{from %s}", elem.URL.String()))
-		}
 		startIdx = elem.EndIdx
 	}
 	buf.Write(content[startIdx:])
@@ -135,5 +134,12 @@ func renderImageMark(elem *ImageElement) string {
 		imgUrl = elem.HostingURL.String()
 	}
 	imgUrl, _ = url.QueryUnescape(imgUrl)
-	return fmt.Sprintf("![%s](%s)", elem.Name, imgUrl)
+
+	imageMark := fmt.Sprintf("![%s](%s)", elem.Name, imgUrl)
+
+	// 决定是否保留源地址
+	if ReserveSourceImageUrl && elem.IsFinishDownload() {
+		return fmt.Sprintf("%s{from %s}", imageMark, elem.URL.String())
+	}
+	return imageMark
 }

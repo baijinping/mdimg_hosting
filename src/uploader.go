@@ -11,7 +11,7 @@ func uploader(wg *sync.WaitGroup, payload <-chan *ImageElement) {
 	defer wg.Done()
 	for elem := range payload {
 		// 这里的检查是必要的
-		if elem.AlreadyHosting() {
+		if elem.AlreadyHosting() || !elem.IsFinishDownload() {
 			continue
 		}
 

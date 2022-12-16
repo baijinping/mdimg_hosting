@@ -8,8 +8,10 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/baijinping/mdimg_hosting/src/hosting/internal"
 	"github.com/tencentyun/cos-go-sdk-v5"
+	"go.uber.org/zap"
+
+	"github.com/baijinping/mdimg_hosting/src/hosting/internal"
 )
 
 // COSHostingService 腾讯云对象存储图床服务
@@ -79,6 +81,7 @@ func (svc *COSHostingService) Upload(ctx context.Context, filename string, raw [
 			return nil, err
 		}
 		if isRepeat {
+			Logger.Infof("检测为重复文件: %s  (size=%dB)", filename, len(raw))
 			return svc.getObjectURL(filename), nil
 		}
 
@@ -104,4 +107,13 @@ func (svc *COSHostingService) getObjectURL(key string) *url.URL {
 
 func (svc *COSHostingService) IsHostingURL(imgUrl *url.URL) bool {
 	return imgUrl.Host == svc.bucketUrl.Host
+}
+
+var (
+	Logger *zap.SugaredLogger
+)
+
+func init() {
+	zaplog, _ := zap.NewDevelopment()
+	Logger = zaplog.Sugar()
 }
